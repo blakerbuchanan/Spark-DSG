@@ -115,6 +115,16 @@ std::string writeGraph(const DynamicSceneGraph& graph, bool include_mesh) {
   record["edges"] = nlohmann::json::array();
   record["layer_ids"] = graph.layer_ids;
 
+  // Let's just keep track of a completely separate, filtered, graph json.
+  nlohmann::json filtered_record;
+  filtered_record[io::FileHeader::IDENTIFIER_STRING + "_header"] = io::FileHeader::current();
+
+  filtered_record["directed"] = false;
+  filtered_record["multigraph"] = false;
+  filtered_record["nodes"] = nlohmann::json::array();
+  filtered_record["edges"] = nlohmann::json::array();
+  filtered_record["layer_ids"] = graph.layer_ids;
+
   for (const auto& id_layer_pair : graph.layers()) {
     for (const auto& id_node_pair : id_layer_pair.second->nodes()) {
       record["nodes"].push_back(*id_node_pair.second);
@@ -125,12 +135,78 @@ std::string writeGraph(const DynamicSceneGraph& graph, bool include_mesh) {
     }
   }
 
+  // Do the same thing, but for non-const instances of the graph so we can manipulate them
+  for (auto& id_layer_pair : graph.layers()) {
+    for (auto& id_node_pair : id_layer_pair.second->nodes()) {
+      filtered_record["nodes"].push_back(*id_node_pair.second);
+
+      if (true == filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].contains("mesh_connections"))
+      {
+        filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].erase("mesh_connections");
+      }
+
+      if (true == filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].contains("is_active"))
+      {
+        filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].erase("is_active");
+      }
+
+      if (true == filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].contains("is_predicted"))
+      {
+        filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].erase("is_predicted");
+      }
+
+      if (true == filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].contains("last_updated_time_ns"))
+      {
+        filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].erase("last_updated_time_ns");
+      }
+
+      if (true == filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].contains("bounding_box"))
+      {
+        filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].erase("bounding_box");
+      }
+
+      if (true == filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].contains("world_R_object"))
+      {
+        filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].erase("world_R_object");
+      }
+
+      if (true == filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].contains("registered"))
+      {
+        filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].erase("registered");
+      }
+
+      if (true == filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].contains("dbow_ids"))
+      {
+        filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].erase("dbow_ids");
+      }
+
+      if (true == filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].contains("dbow_values"))
+      {
+        filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].erase("dbow_values");
+      }
+    }
+
+    for (auto& id_edge_pair : id_layer_pair.second->edges()) {
+      record["edges"].push_back(id_edge_pair.second);
+    }
+  }
+
   for (const auto& id_edge_pair : graph.interlayer_edges()) {
     record["edges"].push_back(id_edge_pair.second);
   }
 
+  // For filtered json
+  for (const auto& id_edge_pair : graph.interlayer_edges()) {
+    filtered_record["edges"].push_back(id_edge_pair.second);
+  }
+
   for (const auto& id_edge_pair : graph.dynamic_interlayer_edges()) {
     record["edges"].push_back(id_edge_pair.second);
+  }
+
+  // For filterd json
+  for (const auto& id_edge_pair : graph.dynamic_interlayer_edges()) {
+    filtered_record["edges"].push_back(id_edge_pair.second);
   }
 
   for (const auto& id_layer_group_pair : graph.dynamicLayers()) {
@@ -151,14 +227,79 @@ std::string writeGraph(const DynamicSceneGraph& graph, bool include_mesh) {
     }
   }
 
+  // Again, do the same thing but for nodes in the graph's dynamic layers
+  for (auto& id_layer_group_pair : graph.dynamicLayers()) {
+    for (auto& prefix_layer_pair : id_layer_group_pair.second) {
+      auto& layer = *prefix_layer_pair.second;
+
+      for (size_t i = 0; i < layer.nodes().size(); ++i) {
+        if (!layer.hasNodeByIndex(i)) {
+          continue;
+        }
+
+        filtered_record["nodes"].push_back(layer.getNodeByIndex(i));
+
+        if (true == filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].contains("mesh_connections"))
+        {
+          filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].erase("mesh_connections");
+        }
+
+        if (true == filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].contains("is_active"))
+        {
+          filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].erase("is_active");
+        }
+
+        if (true == filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].contains("is_predicted"))
+        {
+          filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].erase("is_predicted");
+        }
+
+        if (true == filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].contains("last_updated_time_ns"))
+        {
+          filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].erase("last_updated_time_ns");
+        }
+
+        if (true == filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].contains("bounding_box"))
+        {
+          filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].erase("bounding_box");
+        }
+
+        if (true == filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].contains("world_R_object"))
+        {
+          filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].erase("world_R_object");
+        }
+
+        if (true == filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].contains("registered"))
+        {
+          filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].erase("registered");
+        }
+
+        if (true == filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].contains("dbow_ids"))
+        {
+          filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].erase("dbow_ids");
+        }
+
+        if (true == filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].contains("dbow_values"))
+        {
+          filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].erase("dbow_values");
+        }
+      }
+
+      for (auto& id_edge_pair : layer.edges()) {
+        filtered_record["edges"].push_back(id_edge_pair.second);
+      }
+    }
+  }
+
   auto mesh = graph.mesh();
   if (!mesh || !include_mesh) {
-    return record.dump();
+    // return record.dump(); // we only care about the filtered json
+    return filtered_record.dump();
   }
 
   // TODO(nathan) push header serialization to to/from json and reuse
-  record["mesh"] = nlohmann::json::parse(mesh->serializeToJson());
-  return record.dump();
+  filtered_record["mesh"] = nlohmann::json::parse(mesh->serializeToJson());
+  return filtered_record.dump();
 }
 
 DynamicSceneGraph::Ptr readGraph(const std::string& contents) {
