@@ -316,7 +316,8 @@ class RemoteVisualizer:
             if name in self._new_geometries:
                 self._viz.add_geometry(name, geom, mat)
             else:
-                self._viz.update_geometry(name, geom, mat)
+                # self._viz.update_geometry(name, geom, mat)
+                pass
 
         self._new_geometries = []
 
