@@ -157,7 +157,7 @@ std::string writeGraph(const DynamicSceneGraph& graph, bool include_mesh) {
 
       if (true == filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].contains("last_update_time_ns"))
       {
-        filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].erase("last_updated_time_ns");
+        filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].erase("last_update_time_ns");
       }
 
       if (true == filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].contains("bounding_box"))
@@ -219,6 +219,11 @@ std::string writeGraph(const DynamicSceneGraph& graph, bool include_mesh) {
       if (true == filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].contains("semantic_feature"))
       {
         filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].erase("semantic_feature");
+      }
+
+      if (true == filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].contains("external_key"))
+      {
+        filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].erase("external_key");
       }
     }
 
@@ -292,7 +297,7 @@ std::string writeGraph(const DynamicSceneGraph& graph, bool include_mesh) {
 
         if (true == filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].contains("last_update_time_ns"))
         {
-          filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].erase("last_updated_time_ns");
+          filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].erase("last_update_time_ns");
         }
 
         if (true == filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].contains("bounding_box"))
@@ -354,6 +359,11 @@ std::string writeGraph(const DynamicSceneGraph& graph, bool include_mesh) {
         if (true == filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].contains("semantic_feature"))
         {
           filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].erase("semantic_feature");
+        }
+
+        if (true == filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].contains("external_key"))
+        {
+          filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].erase("external_key");
         }
       }
 
