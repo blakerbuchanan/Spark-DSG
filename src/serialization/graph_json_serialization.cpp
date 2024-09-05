@@ -155,7 +155,7 @@ std::string writeGraph(const DynamicSceneGraph& graph, bool include_mesh) {
         filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].erase("is_predicted");
       }
 
-      if (true == filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].contains("last_updated_time_ns"))
+      if (true == filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].contains("last_update_time_ns"))
       {
         filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].erase("last_updated_time_ns");
       }
@@ -183,6 +183,42 @@ std::string writeGraph(const DynamicSceneGraph& graph, bool include_mesh) {
       if (true == filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].contains("dbow_values"))
       {
         filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].erase("dbow_values");
+      }
+
+      if (true == filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].contains("deformation_connections"))
+      {
+        filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].erase("deformation_connections");
+      }
+
+      if (true == filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].contains("mesh_vertex_labels"))
+      {
+        filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].erase("mesh_vertex_labels");
+      }
+
+      if (true == filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].contains("pcl_mesh_connections"))
+      {
+        filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].erase("pcl_mesh_connections");
+      }
+
+      if (true == filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].contains("voxblox_mesh_connections"))
+      {
+        filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].erase("voxblox_mesh_connections");
+      }
+
+      if (true == filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].contains("num_frontier_voxels"))
+      {
+        filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].erase("num_frontier_voxels");
+      }
+
+      if (true == filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].contains("num_basis_points"))
+      {
+        filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].erase("num_basis_points");
+      }
+
+      // TODO(blake) Do we need this?
+      if (true == filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].contains("semantic_feature"))
+      {
+        filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].erase("semantic_feature");
       }
     }
 
@@ -254,7 +290,7 @@ std::string writeGraph(const DynamicSceneGraph& graph, bool include_mesh) {
           filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].erase("is_predicted");
         }
 
-        if (true == filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].contains("last_updated_time_ns"))
+        if (true == filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].contains("last_update_time_ns"))
         {
           filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].erase("last_updated_time_ns");
         }
@@ -282,6 +318,42 @@ std::string writeGraph(const DynamicSceneGraph& graph, bool include_mesh) {
         if (true == filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].contains("dbow_values"))
         {
           filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].erase("dbow_values");
+        }
+
+        if (true == filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].contains("deformation_connections"))
+        {
+          filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].erase("deformation_connections");
+        }
+
+        if (true == filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].contains("mesh_vertex_labels"))
+        {
+          filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].erase("mesh_vertex_labels");
+        }
+
+        if (true == filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].contains("pcl_mesh_connections"))
+        {
+          filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].erase("pcl_mesh_connections");
+        }
+
+        if (true == filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].contains("voxblox_mesh_connections"))
+        {
+          filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].erase("voxblox_mesh_connections");
+        }
+
+        if (true == filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].contains("num_frontier_voxels"))
+        {
+          filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].erase("num_frontier_voxels");
+        }
+
+        if (true == filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].contains("num_basis_points"))
+        {
+          filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].erase("num_basis_points");
+        }
+
+        // TODO(blake) Do we need this?
+        if (true == filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].contains("semantic_feature"))
+        {
+          filtered_record["nodes"][filtered_record["nodes"].size() - 1]["attributes"].erase("semantic_feature");
         }
       }
 
