@@ -509,6 +509,14 @@ class DynamicSceneGraph {
   void save(std::string filepath, bool include_mesh = true) const;
 
   /**
+   * @brief Save a filtered version of the  DSG to file. By default, this will save a binary version of the
+   * graph. To save as JSON, specify the filepath with a .json extension.
+   * @param filepath Filepath to save graph to.
+   * @param include_mesh Optionally encode mesh (defaults to true)
+   */
+  void saveFiltered(std::string filepath, bool include_mesh = true) const;
+
+  /**
    * @brief parse graph from binary or JSON file
    * @param filepath Complete path to file to read, including extension.
    * @returns Resulting parsed scene graph

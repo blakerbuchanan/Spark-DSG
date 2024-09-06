@@ -122,6 +122,13 @@ void saveDsgJson(const DynamicSceneGraph& graph,
   outfile << json::writeGraph(graph, include_mesh);
 }
 
+void saveFilteredDsgJson(const DynamicSceneGraph& graph,
+                 const std::string& filepath,
+                 bool include_mesh) {
+  std::ofstream outfile(filepath);
+  outfile << json::writeFilteredGraph(graph, include_mesh);
+}
+
 DynamicSceneGraph::Ptr loadDsgJson(const std::string& filepath) {
   std::ifstream infile(filepath);
   std::stringstream ss;

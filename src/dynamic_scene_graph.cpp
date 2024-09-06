@@ -843,6 +843,17 @@ void DynamicSceneGraph::save(std::string filepath, bool include_mesh) const {
   io::saveDsgBinary(*this, filepath, include_mesh);
 }
 
+void DynamicSceneGraph::saveFiltered(std::string filepath, bool include_mesh) const {
+  const auto type = io::verifyFileExtension(filepath);
+  if (type == io::FileType::JSON) {
+    io::saveFilteredDsgJson(*this, filepath, include_mesh);
+    return;
+  }
+
+  // Can only be binary after verification.
+  io::saveDsgBinary(*this, filepath, include_mesh);
+}
+
 DynamicSceneGraph::Ptr DynamicSceneGraph::load(std::string filepath) {
   if (!std::filesystem::exists(filepath)) {
     throw std::runtime_error("graph file does not exist: " + filepath);

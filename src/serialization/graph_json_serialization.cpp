@@ -115,16 +115,6 @@ std::string writeGraph(const DynamicSceneGraph& graph, bool include_mesh) {
   record["edges"] = nlohmann::json::array();
   record["layer_ids"] = graph.layer_ids;
 
-  // Let's just keep track of a completely separate, filtered, graph json.
-  nlohmann::json filtered_record;
-  filtered_record[io::FileHeader::IDENTIFIER_STRING + "_header"] = io::FileHeader::current();
-
-  filtered_record["directed"] = false;
-  filtered_record["multigraph"] = false;
-  filtered_record["nodes"] = nlohmann::json::array();
-  filtered_record["edges"] = nlohmann::json::array();
-  filtered_record["layer_ids"] = graph.layer_ids;
-
   for (const auto& id_layer_pair : graph.layers()) {
     for (const auto& id_node_pair : id_layer_pair.second->nodes()) {
       record["nodes"].push_back(*id_node_pair.second);
@@ -134,6 +124,54 @@ std::string writeGraph(const DynamicSceneGraph& graph, bool include_mesh) {
       record["edges"].push_back(id_edge_pair.second);
     }
   }
+
+  for (const auto& id_edge_pair : graph.interlayer_edges()) {
+    record["edges"].push_back(id_edge_pair.second);
+  }
+
+  for (const auto& id_edge_pair : graph.dynamic_interlayer_edges()) {
+    record["edges"].push_back(id_edge_pair.second);
+  }
+
+  for (const auto& id_layer_group_pair : graph.dynamicLayers()) {
+    for (const auto& prefix_layer_pair : id_layer_group_pair.second) {
+      const auto& layer = *prefix_layer_pair.second;
+
+      for (size_t i = 0; i < layer.nodes().size(); ++i) {
+        if (!layer.hasNodeByIndex(i)) {
+          continue;
+        }
+
+        record["nodes"].push_back(layer.getNodeByIndex(i));
+      }
+
+      for (const auto& id_edge_pair : layer.edges()) {
+        record["edges"].push_back(id_edge_pair.second);
+      }
+    }
+  }
+
+  auto mesh = graph.mesh();
+  if (!mesh || !include_mesh) {
+    return record.dump();
+  }
+
+  // TODO(nathan) push header serialization to to/from json and reuse
+  record["mesh"] = nlohmann::json::parse(mesh->serializeToJson());
+  return record.dump();
+}
+
+std::string writeFilteredGraph(const DynamicSceneGraph& graph, bool include_mesh)
+{
+  // Let's just keep track of a completely separate, filtered, graph json.
+  nlohmann::json filtered_record;
+  filtered_record[io::FileHeader::IDENTIFIER_STRING + "_header"] = io::FileHeader::current();
+
+  filtered_record["directed"] = false;
+  filtered_record["multigraph"] = false;
+  filtered_record["nodes"] = nlohmann::json::array();
+  filtered_record["edges"] = nlohmann::json::array();
+  filtered_record["layer_ids"] = graph.layer_ids;
 
   // Do the same thing, but for non-const instances of the graph so we can manipulate them
   for (auto& id_layer_pair : graph.layers()) {
@@ -228,12 +266,8 @@ std::string writeGraph(const DynamicSceneGraph& graph, bool include_mesh) {
     }
 
     for (auto& id_edge_pair : id_layer_pair.second->edges()) {
-      record["edges"].push_back(id_edge_pair.second);
+      filtered_record["edges"].push_back(id_edge_pair.second);
     }
-  }
-
-  for (const auto& id_edge_pair : graph.interlayer_edges()) {
-    record["edges"].push_back(id_edge_pair.second);
   }
 
   // For filtered json
@@ -241,31 +275,9 @@ std::string writeGraph(const DynamicSceneGraph& graph, bool include_mesh) {
     filtered_record["edges"].push_back(id_edge_pair.second);
   }
 
-  for (const auto& id_edge_pair : graph.dynamic_interlayer_edges()) {
-    record["edges"].push_back(id_edge_pair.second);
-  }
-
   // For filterd json
   for (const auto& id_edge_pair : graph.dynamic_interlayer_edges()) {
     filtered_record["edges"].push_back(id_edge_pair.second);
-  }
-
-  for (const auto& id_layer_group_pair : graph.dynamicLayers()) {
-    for (const auto& prefix_layer_pair : id_layer_group_pair.second) {
-      const auto& layer = *prefix_layer_pair.second;
-
-      for (size_t i = 0; i < layer.nodes().size(); ++i) {
-        if (!layer.hasNodeByIndex(i)) {
-          continue;
-        }
-
-        record["nodes"].push_back(layer.getNodeByIndex(i));
-      }
-
-      for (const auto& id_edge_pair : layer.edges()) {
-        record["edges"].push_back(id_edge_pair.second);
-      }
-    }
   }
 
   // Again, do the same thing but for nodes in the graph's dynamic layers
@@ -375,7 +387,6 @@ std::string writeGraph(const DynamicSceneGraph& graph, bool include_mesh) {
 
   auto mesh = graph.mesh();
   if (!mesh || !include_mesh) {
-    // return record.dump(); // we only care about the filtered json
     return filtered_record.dump();
   }
 

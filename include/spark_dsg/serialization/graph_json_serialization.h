@@ -45,6 +45,13 @@ namespace spark_dsg::io::json {
 std::string writeGraph(const DynamicSceneGraph& graph, bool include_mesh = false);
 
 /**
+ * @brief Get JSON string representing filtered graph
+ * @param include_mesh Optionally encode mesh (defaults to false)
+ * @returns JSON string representing graph
+ */
+std::string writeFilteredGraph(const DynamicSceneGraph& graph, bool include_mesh = false);
+
+/**
  * @brief parse graph from JSON string
  * @param contents JSON string to parse
  * @returns Resulting parsed scene graph

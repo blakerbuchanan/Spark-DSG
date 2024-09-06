@@ -74,6 +74,16 @@ void saveDsgJson(const DynamicSceneGraph& graph,
                  bool include_mesh = false);
 
 /**
+ * @brief Save a filtered DynamicSceneGraph to a JSON file.
+ * @param graph The graph to save.
+ * @param filepath The filepath including extension to save to.
+ * @param include_mesh If true, save the mesh data for each node.
+ */
+void saveFilteredDsgJson(const DynamicSceneGraph& graph,
+                 const std::string& filepath,
+                 bool include_mesh = false);
+
+/**
  * @brief Load a DynamicSceneGraph from a JSON file.
  * @param filepath The filepath including extension to load from.
  * @return A pointer to the loaded graph or nullptr if loading failed.
