@@ -742,6 +742,20 @@ PYBIND11_MODULE(_dsg_bindings, module) {
              bool include_mesh) { graph.save(filepath, include_mesh); },
           "filepath"_a,
           "include_mesh"_a = true)
+      .def(
+          "save_filtered",
+          [](const DynamicSceneGraph& graph,
+             const std::string& filepath,
+             bool include_mesh) { graph.saveFiltered(filepath, include_mesh); },
+          "filepath"_a,
+          "include_mesh"_a = true)
+      .def(
+          "save_filtered",
+          [](const DynamicSceneGraph& graph,
+             const std::filesystem::path& filepath,
+             bool include_mesh) { graph.saveFiltered(filepath, include_mesh); },
+          "filepath"_a,
+          "include_mesh"_a = true)
       .def_static("load", &DynamicSceneGraph::load)
       .def_static("load",
                   [](const std::filesystem::path& filepath) {
